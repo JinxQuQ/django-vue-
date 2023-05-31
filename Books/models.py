@@ -9,6 +9,7 @@ class Book(models.Model):
     book_name = models.CharField(max_length=64)
     create_time = models.DateTimeField(auto_now=True)
     book_author = models.CharField(max_length=50,default="unknown")
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.book_name

@@ -7,6 +7,7 @@ from django.core import serializers
 from django.views.decorators.http import require_http_methods
 
 from .models import Book
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -32,7 +33,7 @@ def add_book(request):
 def show_books(request):
     response = {}
     try:
-        books = Book.objects.filter()
+        books = Book.objects.filter(is_deleted=False)
         response['list'] = json.loads(serializers.serialize("json", books))
         response['msg'] = 'success'
         response['error_num'] = 0
@@ -55,3 +56,23 @@ def delete_book(request):
         response['error_num'] = 1
 
     return JsonResponse(response) """
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_book(request):
+    response = {}
+    try:
+        print (request.data.row)
+        book = Book.objects.only('id').filter(id=request.data.row).first()
+        print (book)
+        if book:
+            book.is_deleted = True
+            book.save(update_fields=['is_deleted'])
+            response['msg'] = 'success'
+            response['error_num'] = 0
+    except Exception as e:
+        response['msg'] = str(e)
+        response['error_num'] = 1
+
+    return JsonResponse(response)
