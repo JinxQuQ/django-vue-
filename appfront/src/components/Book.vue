@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <el-row display="margin-top:10px">
-        <el-input v-model="input" placeholder="请输入书名" style="display:inline-table; width: 30%; float:left"></el-input>
+        <el-input name="bookname" v-model="input_book_name" placeholder="请输入书名" style="display:inline-table; width: 30%; float:left"></el-input>
+        <el-input name="bookauthor" v-model="input_book_author" placeholder="请输入作者" style="display:inline-table; width: 30%; float:left"></el-input>
         <el-button type="primary" @click="addBook()" style="float:left; margin: 2px;">新增</el-button>
     </el-row>
     <el-row>
@@ -12,11 +13,21 @@
           <el-table-column prop="book_name" label="书名" min-width="100">
             <template scope="scope"> {{ scope.row.fields.book_name }} </template>
           </el-table-column>
+          <el-table-column prop="book_name" label="作者" min-width="100">
+            <template scope="scope"> {{ scope.row.fields.book_author }} </template>
+          </el-table-column>
           <el-table-column prop="add_time" label="添加时间" min-width="100">
             <template scope="scope"> {{ scope.row.fields.create_time }} </template>
           </el-table-column>
+          <el-table-column label="Operations">
+            <template #default="scope">
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
         </el-table>
     </el-row>
+    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
   </div>
 </template>
 
@@ -25,7 +36,8 @@ export default {
   name: 'Book',
   data () {
     return {
-      input: '',
+      input_book_name: '',
+      input_book_author: '',
       bookList: []
     }
   },
@@ -34,7 +46,7 @@ export default {
   },
   methods: {
     addBook () {
-      this.$http.get('http://127.0.0.1:8000/books/add_book?book_name=' + this.input)
+      this.$http.get('http://127.0.0.1:8000/books/add_book?book_name=' + this.input_book_name + '&book_author=' + this.input_book_author)
         .then((response) => {
           var res = JSON.parse(response.bodyText)
           if (res.error_num === 0) {
@@ -58,6 +70,9 @@ export default {
           }
         })
     }
+  /* deleteBook(){
+      console.log(this)
+    }  */
   }
 }
 </script>

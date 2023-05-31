@@ -16,7 +16,7 @@ from .models import Book
 def add_book(request):
     response = {}
     try:
-        book = Book(book_name=request.GET.get('book_name'))
+        book = Book(book_name=request.GET.get('book_name'),book_author=request.GET.get('book_author'))
         book.save()
         response['msg'] = 'success'
         response['error_num'] = 0
@@ -41,3 +41,17 @@ def show_books(request):
         response['error_num'] = 1
 
     return JsonResponse(response)
+
+
+""" # delete_book删除对应列表的一条书籍数据（通过JsonResponse返回能被前端识别的json格式数据）
+@require_http_methods(["DELETE"])
+def delete_book(request):
+    response = {}
+    try:
+        books = Book.delete()
+
+    except Exception as e:
+        response['msg'] = str(e)
+        response['error_num'] = 1
+
+    return JsonResponse(response) """
